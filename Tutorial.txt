@@ -1,0 +1,234 @@
+//Instalaciones requeridas SINGLE-SPA, YARN
+npm install --global create-single-spa
+npm install –global yarn
+yarn --v
+
+--------------------------------------------------
+//Creación de directorios
+
+// Creating the folder for all projects
+mkdir logrocket-single-spa
+cd logrocket-single-spa
+
+// Creating the root app folder
+mkdir logrocket-single-spa-root
+cd logrocket-single-spa-root
+
+// Creating the single-spa app
+npx create-single-spa
+
+
+Configuraciones:
+	(enter)
+	single-spa-root config
+	yarn
+	No
+	No
+	LogRocket
+---------------------------------------------------
+Creación de los proyectos
+	navBar:
+		cd ..
+		mkdir logrocket-single-spa-navbar
+		cd logrocket-single-spa-navbar
+		npx create-single-spa
+	homePage:
+		cd ..
+		mkdir logrocket-single-spa-homepage
+		cd logrocket-single-spa-homepage
+		npx create-single-spa
+	aboutpage:
+		cd ..
+		mkdir logrocket-single-spa-aboutpage
+		cd logrocket-single-spa-aboutpage
+		npx create-single-spa
+	contactpage:
+		cd ..
+		mkdir logrocket-single-spa-contactpage
+		cd logrocket-single-spa-contactpage
+		npx create-single-spa
+		
+	Configuraciones para los 4 proyectos:
+	(enter)
+	single-spa application / parcel
+	react
+	yarn
+	No
+	LogRocket
+	logrocket-single-spa-(nombre del micro proyecto)
+-----------------------------------------------------------
+
+Abrimos nuestro proyecto root, en el archivo "-root-config.js" y pegamos esto:
+
+import { registerApplication, start } from "single-spa";
+
+registerApplication({
+    name: "@LogRocket/logrocket-single-spa-navbar",
+    app: () => System.import("@LogRocket/logrocket-single-spa-navbar"),
+    activeWhen: ["/"],
+});
+
+registerApplication({
+    name: "@LogRocket/logrocket-single-spa-homepage",
+    app: () => System.import("@LogRocket/logrocket-single-spa-homepage"),
+    activeWhen: [(location) => location.pathname === "/"],
+});
+
+registerApplication({
+    name: "@LogRocket/logrocket-single-spa-aboutpage",
+    app: () => System.import("@LogRocket/logrocket-single-spa-aboutpage"),
+    activeWhen: ["/about"],
+});
+
+registerApplication({
+    name: "@LogRocket/logrocket-single-spa-contactpage",
+    app: () => System.import("@LogRocket/logrocket-single-spa-contactpage"),
+    activeWhen: ["/contact"],
+});
+
+start({
+    urlRerouteOnly: true,
+});
+
+----------------------------------
+Abrimos index.ejs y agregamos esto dentro de la etiqueta HEAD
+<% if (isLocal) { %>
+    <script type="systemjs-importmap">
+      {
+        "imports": {
+          "react": "https://cdn.jsdelivr.net/npm/react@16.13.1/umd/react.development.js",
+          "react-dom": "https://cdn.jsdelivr.net/npm/react-dom@16.13.1/umd/react-dom.development.js",
+          "@LogRocket/root-config": "http://localhost:9000/LogRocket-root-config.js",
+          "@LogRocket/logrocket-single-spa-navbar": "http://localhost:9001/LogRocket-logrocket-single-spa-navbar.js",
+          "@LogRocket/logrocket-single-spa-homepage": "http://localhost:9002/LogRocket-logrocket-single-spa-homepage.js",
+          "@LogRocket/logrocket-single-spa-aboutpage": "http://localhost:9003/LogRocket-logrocket-single-spa-aboutpage.js",
+          "@LogRocket/logrocket-single-spa-contactpage": "http://localhost:9004/LogRocket-logrocket-single-spa-contactpage.js"
+        }
+      }
+    </script>
+  <% } %>
+ ----------------------------------------------------------------------
+ Abrimos el componente navbar, abrimos root.component.js
+ import React from "react";
+
+export default function Root(props) {
+  return (
+    <header className="masthead mb-auto">
+      <div className="inner">
+        <a className="blog-logo" href="/">
+          <img
+            style={{ maxWidth: "40px" }}
+            src="https://single-spa.js.org/img/logo-white-bgblue.svg"
+            alt="LogRocket Blog"
+          />{" "}
+          React + single-spa
+        </a>
+        <nav className="nav nav-masthead justify-content-center">
+          <a
+            className={`nav-link ${location.pathname === "/" && "active"}`}
+            href="/"
+          >
+            Home
+          </a>
+          <a
+            className={`nav-link ${location.pathname === "/about" && "active"}`}
+            href="/about"
+          >
+            About Us
+          </a>
+          <a
+            className={`nav-link ${
+              location.pathname === "/contact" && "active"
+            }`}
+            href="/contact"
+          >
+            Contact
+          </a>
+        </nav>
+      </div>
+    </header>
+  );
+}
+
+--------------------------------------------------------------
+Abrimos el componente homePage, abrimos root.component.js
+
+import React from "react";
+
+export default function Root(props) {
+  return (
+    <section>
+      <div className="homepage-hero" style={{ margin: "5rem 0" }}>
+        <img
+          style={{ width: "100%" }}
+          src="https://blog.logrocket.com/wp-content/uploads/2019/05/logrocket-blog.jpg"
+        />
+      </div>
+      <h1 className="cover-heading">Welcome to the micro-frontend world!</h1>
+      <p className="lead">
+        This is an example of how powerful micro-frontends can be!
+        <br /> You may integrate all of your frontend apps, regardless of what
+        frameworks they're built with.
+      </p>
+      <p className="lead">
+        <a href="#" className="btn btn-lg btn-secondary">
+          Learn more
+        </a>
+      </p>
+    </section>
+  );
+}
+------------------------------------------------------------
+Abrimos el componente Aboutpage, abrimos root.component.js
+
+// About page
+
+import React from "react";
+
+export default function Root(props) {
+  return (
+    <section>
+      <div className="homepage-hero" style={{ margin: "5rem 0" }}>
+        <img
+          style={{ width: "100%" }}
+          src="https://blog.logrocket.com/wp-content/uploads/2019/05/logrocket-blog.jpg"
+        />
+      </div>
+      <h1 class="cover-heading">About Us!</h1>
+      <p class="lead">
+        Hey, what's up?
+        <br />
+        This is a page to talk about us.
+      </p>
+    </section>
+  );
+}
+---------------------------------------------------------------
+Abrimos el componente contactpage, abrimos root.component.js
+// Contact page
+import React from "react";
+
+export default function Root(props) {
+  return (
+    <section>
+      <div className="homepage-hero" style={{ margin: "5rem 0" }}>
+        <img
+          style={{ width: "100%" }}
+          src="https://blog.logrocket.com/wp-content/uploads/2019/05/logrocket-blog.jpg"
+        />
+      </div>
+      <h1 className="cover-heading">Contact Us</h1>
+      <p className="lead">
+        Hey, what's up?
+        <br />
+        This is a page to contact us.
+      </p>
+    </section>
+  );
+}
+---------------------------------------------------------------
+Abrimos root, archivo index.js
+
+<!-- Bootstrap core CSS -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://getbootstrap.com/docs/4.0/examples/cover/cover.css" />
